@@ -9,7 +9,7 @@ Este documento detalla los pasos necesarios para ejecutar la Web API y visualiza
 
 ## 🛠️ Requisitos Previos
 
-Antes de comenzar, asegúrate de instalar las dependencias necesarias. Abre tu terminal y ejecuta el siguiente comando:
+Resulta importante instalar las dependencias necesarias. En la terminal se debe ejeutar el siguiente comando:
 
 ```bash
 pip install fastapi uvicorn paho-mqtt
@@ -19,27 +19,26 @@ pip install fastapi uvicorn paho-mqtt
 
 ## 🚀 Paso 1: Levantar el Servidor Backend (FastAPI)
 
-1.  Ubícate en la carpeta donde se encuentra el archivo `main.py`.
-2.  Ejecuta el servidor con el siguiente comando:
+En la carpeta donde se encuentra el archivo `main.py`, inicia el servidor con el siguiente comando:
     ```bash
     uvicorn main:app --reload
     ```
-3.  **Verificación:** Puedes acceder a la última medición en formato JSON crudo ingresando a:
+Se puede ver la última medición en formato JSON crudo ingresando a:
     > 🔗 [http://127.0.0.1:8000/api/ultima\_medicion](http://127.0.0.1:8000/api/ultima_medicion)
 
 -----
 
 ## 🌐 Paso 2: Levantar el Servidor Frontend
 
-Para visualizar la interfaz correctamente, sigue estos pasos sin cerrar la terminal anterior:
+Para visualizar la interfaz correctamente, **sin cerrar la terminal anterior**:
 
-1.  **Mantén la terminal de Python (`uvicorn`) activa.** No la detengas.
-2.  Abre una **segunda ventana de terminal** y navega hasta la carpeta donde se encuentra tu archivo `index.html`.
+1.  **Mantené la terminal de Python (`uvicorn`) activa.** 
+2.  Abriendo una **segunda ventana de terminal**, navega hasta la carpeta donde se encuentra tu archivo `index.html`.
 3.  Inicia un servidor web básico con Python:
     ```bash
     python -m http.server 8080
     ```
-4.  **Acceso final:** Abre tu navegador y entra a la siguiente dirección para ver el módulo en acción:
+4.  **Acceso final:** Entra a la siguiente dirección para ver la web API:
     > 🔗 [http://localhost:8080](https://www.google.com/search?q=http://localhost:8080)
 
 -----
