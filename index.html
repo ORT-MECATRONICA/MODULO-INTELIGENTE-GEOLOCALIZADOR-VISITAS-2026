@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Módulo Inteligente ORT Mecatrónica | ORT Mecatrónica </title>
+    <style>
+        /* Paleta de colores y tipografía */
+        :root {
+            --primary-green: #689F38;
+            --bg-gray: #F5F5F5;
+            --text-dark: #333333;
+            --text-light: #777777;
+            --card-bg: #FFFFFF;
+            --alert-red: #D32F2F;
+            --alert-yellow: #FBC02D;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+        }
+
+        /* Barra de navegación */
+        .navbar {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Indicador de Estado Central */
+        .status-container {
+            display: flex;
+            justify-content: center;
+            margin: 24px 0;
+        }
+
+        .status-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 6px solid var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-green);
+            background-color: var(--card-bg);
+            transition: all 0.3s ease;
+        }
+
+        /* Grilla de Tarjetas */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+
+        .card-unit {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        /* Sección de GPS y Eventos */
+        .section-title {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .timeline-card {
+            background-color: var(--card-bg);
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        Módulo Inteligente Geolocalizador - ORT Mecatrónica
+    </div>
+
+    <div class="container">
+        <div class="status-container">
+            <div id="status-circle" class="status-circle">
+                NORMAL
+            </div>
+        </div>
+
+        <div class="section-title">Datos Promedio Actuales</div>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Temperatura</div>
+                <div class="card-value"><span id="val-temp">--</span><span class="card-unit">°C</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Humedad</div>
+                <div class="card-value"><span id="val-hum">--</span><span class="card-unit">%</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Luminosidad</div>
+                <div class="card-value"><span id="val-luz">--</span><span class="card-unit">%</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Gas MQ2</div>
+                <div class="card-value"><span id="val-mq2">--</span><span class="card-unit">%</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Gas MQ9</div>
+                <div class="card-value"><span id="val-mq9">--</span><span class="card-unit">%</span></div>
+            </div>
+        </div>
+
+        <div class="section-title">Ubicación GPS</div>
+        <div class="timeline-card">
+            <span style="color: var(--text-light);">Latitud / Longitud</span>
+            <span id="val-gps" style="font-weight: bold;">-34.6131, -58.3772</span>
+        </div>
+
+        <div class="section-title">Línea de Tiempo Reciente</div>
+        <div class="timeline-card" id="timeline-event">
+            <span id="event-time" style="color: var(--primary-green); font-weight: bold;">10:00</span>
+            <span id="event-text">Sistema iniciado correctamente.</span>
+        </div>
+    </div>
+
+    <script>
+        // Función para actualizar los elementos HTML
+        function actualizarUI(datos) {
+            document.getElementById('val-temp').innerText = datos.temperatura.toFixed(1);
+            document.getElementById('val-hum').innerText = datos.humedad.toFixed(1);
+            document.getElementById('val-luz').innerText = datos.luz.toFixed(1);
+            document.getElementById('val-mq2').innerText = datos.mq2.toFixed(1);
+            document.getElementById('val-mq9').innerText = datos.mq9.toFixed(1);
+            
+            const statusCircle = document.getElementById('status-circle');
+            const eventText = document.getElementById('event-text');
+            const eventTime = document.getElementById('event-time');
+            
+            // Actualizar la hora del evento
+            const ahora = new Date();
+            eventTime.innerText = ahora.getHours() + ':' + String(ahora.getMinutes()).padStart(2, '0');
+
+            // Lógica de colores según el estado (alarma)
+            // Asumimos que datos.alarma viene de tu lógica en C++ (ej: 0 = Normal, 2 = Alerta, 5 = Peligro)
+            if (datos.alarma >= 5) {
+                statusCircle.innerText = 'PELIGRO';
+                statusCircle.style.borderColor = 'var(--alert-red)';
+                statusCircle.style.color = 'var(--alert-red)';
+                eventText.innerText = "¡Peligro! Niveles fuera de rango.";
+            } else if (datos.alarma > 0) {
+                statusCircle.innerText = 'ALERTA';
+                statusCircle.style.borderColor = 'var(--alert-yellow)';
+                statusCircle.style.color = 'var(--alert-yellow)';
+                eventText.innerText = "Advertencia: Revisar mediciones.";
+            } else {
+                statusCircle.innerText = 'NORMAL';
+                statusCircle.style.borderColor = 'var(--primary-green)';
+                statusCircle.style.color = 'var(--primary-green)';
+                eventText.innerText = "Lecturas dentro del rango esperado.";
+            }
+        }
+
+        // Función para consultar el servidor Python (FastAPI)
+        async function fetchData() {
+            try {
+                // Intentamos pegarle a la API
+                const response = await fetch('http://127.0.0.1:8000/api/ultima_medicion');
+                const data = await response.json();
+                
+                if (data.error) {
+                    console.log("Base de datos vacía, inyectando datos simulados...");
+                    usarDatosSimulados();
+                } else {
+                    actualizarUI(data);
+                }
+            } catch (error) {
+                console.log("No se detectó el backend de Python, inyectando datos simulados...");
+                usarDatosSimulados();
+            }
+        }
+
+        function usarDatosSimulados() {
+            // Simulamos variaciones aleatorias para que veas cómo cambia la interfaz
+            const mockData = {
+                temperatura: 22 + (Math.random() * 5),
+                humedad: 40 + (Math.random() * 10),
+                luz: 70 + (Math.random() * 20),
+                mq2: 10 + (Math.random() * 5),
+                mq9: 5 + (Math.random() * 5),
+                alarma: Math.floor(Math.random() * 6) // Genera un número del 0 al 5 aleatorio
+            };
+            actualizarUI(mockData);
+        }
+
+        // Consultar datos inmediatamente y luego cada 3 segundos
+        fetchData();
+        setInterval(fetchData, 3000);
+    </script>
+</body>
+</html>
