@@ -21,11 +21,13 @@ pip install fastapi uvicorn paho-mqtt
 
 En la carpeta donde se encuentra el archivo `main.py`, inicia el servidor con el siguiente comando:
 
-    ```bash
+```bash
     uvicorn main:app --reload
-    ```
+```
 Se puede ver la última medición en formato JSON crudo ingresando a:
     > 🔗 [http://127.0.0.1:8000/api/ultima\_medicion](http://127.0.0.1:8000/api/ultima_medicion)
+
+Nota: si se cerró y abrió de nuevo la terminal, simplemente hay que correr de nuevo ambos pasos: tanto el instalador como levantar el servidor. 
 
 -----
 
@@ -39,6 +41,10 @@ Para visualizar la interfaz correctamente, **sin cerrar la terminal anterior**:
     ```bash
     python -m http.server 8080
     ```
+    Alternativamente, si se usa python3, 
+    ```bash
+    python3 -m http.server 8080
+    ```
 4.  **Acceso final:** Entra a la siguiente dirección para ver la web API:
     > 🔗 [http://localhost:8080](https://www.google.com/search?q=http://localhost:8080)
 
@@ -48,6 +54,8 @@ Para visualizar la interfaz correctamente, **sin cerrar la terminal anterior**:
 
   * El servidor backend utiliza **Uvicorn** para manejar las peticiones asíncronas.
   * El frontend se sirve de forma local en el puerto **8080** para evitar conflictos con la API.
+  * Cuando se usan datos **simulados** el banner superior figurará en verde.
+  * Cuando se usan datos **reales** el banner superior figurará en azul. 
 
 
 <!-- # MODULO-INTELIGENTE-GEOLOCALIZADOR-VISITAS-2026
