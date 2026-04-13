@@ -14,6 +14,7 @@
             --card-bg: #FFFFFF;
             --alert-red: #D32F2F;
             --alert-yellow: #FBC02D;
+            --real-blue: #0277BD; /* Variable para el color de datos reales */
         }
 
         body {
@@ -32,6 +33,7 @@
             font-size: 1.2rem;
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color 0.5s ease; /* Transición suave de color */
         }
 
         .container {
@@ -157,22 +159,21 @@
             <span id="val-gps" style="font-weight: bold;">-34.6131, -58.3772</span>
         </div>
 
-        <div class="section-title">Línea de Tiempo Reciente</div>
-        <div class="timeline-card" id="timeline-event">
-            <span id="event-time" style="color: var(--primary-green); font-weight: bold;">10:00</span>
-            <span id="event-text">Sistema iniciado correctamente.</span>
-        </div>
     </div>
 
     <script>
-        // Función para actualizar los elementos HTML
-        function actualizarUI(datos) {
+        // Función para actualizar los elementos HTML, ahora recibe el flag 'esReal'
+        function actualizarUI(datos, esReal) {
             document.getElementById('val-temp').innerText = datos.temperatura.toFixed(1);
             document.getElementById('val-hum').innerText = datos.humedad.toFixed(1);
             document.getElementById('val-luz').innerText = datos.luz.toFixed(1);
             document.getElementById('val-mq2').innerText = datos.mq2.toFixed(1);
             document.getElementById('val-mq9').innerText = datos.mq9.toFixed(1);
             
+            // Lógica de cambio de color del banner superior
+            const navbar = document.querySelector('.navbar');
+            navbar.style.backgroundColor = esReal ? 'var(--real-blue)' : 'var(--primary-green)';
+
             const statusCircle = document.getElementById('status-circle');
             const eventText = document.getElementById('event-text');
             const eventTime = document.getElementById('event-time');
@@ -182,7 +183,6 @@
             eventTime.innerText = ahora.getHours() + ':' + String(ahora.getMinutes()).padStart(2, '0');
 
             // Lógica de colores según el estado (alarma)
-            // Asumimos que datos.alarma viene de tu lógica en C++ (ej: 0 = Normal, 2 = Alerta, 5 = Peligro)
             if (datos.alarma >= 5) {
                 statusCircle.innerText = 'PELIGRO';
                 statusCircle.style.borderColor = 'var(--alert-red)';
@@ -212,7 +212,7 @@
                     console.log("Base de datos vacía, inyectando datos simulados...");
                     usarDatosSimulados();
                 } else {
-                    actualizarUI(data);
+                    actualizarUI(data, true); // true = El banner se pone azul
                 }
             } catch (error) {
                 console.log("No se detectó el backend de Python, inyectando datos simulados...");
@@ -230,7 +230,7 @@
                 mq9: 5 + (Math.random() * 5),
                 alarma: Math.floor(Math.random() * 6) // Genera un número del 0 al 5 aleatorio
             };
-            actualizarUI(mockData);
+            actualizarUI(mockData, false); // false = El banner se mantiene verde
         }
 
         // Consultar datos inmediatamente y luego cada 3 segundos
