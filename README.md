@@ -20,6 +20,7 @@ pip install fastapi uvicorn paho-mqtt
 ## 🚀 Paso 1: Levantar el Servidor Backend (FastAPI)
 
 En la carpeta donde se encuentra el archivo `main.py`, inicia el servidor con el siguiente comando:
+
     ```bash
     uvicorn main:app --reload
     ```
